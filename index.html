@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Expense Tracker</title>
+</head>
+<body>
+
+<h2>Expense Tracker</h2>
+
+<input id="title" placeholder="Title"><br><br>
+<input id="amount" type="number" placeholder="Amount"><br><br>
+<input id="note" placeholder="Note"><br><br>
+
+<select id="user">
+  <option>kartik</option>
+  <option>rahul</option>
+  <option>aman</option>
+  <option>rohit</option>
+  <option>sumit</option>
+</select><br><br>
+
+<button onclick="add()">Add</button>
+
+<ul id="list"></ul>
+
+<script>
+const API = "https://expense-app.onrender.com";
+
+async function add() {
+  await fetch(API + "/add", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      title: title.value,
+      amount: Number(amount.value),
+      note: note.value,
+      createdBy: user.value
+    })
+  });
+  load();
+}
+
+async function load() {
+  const res = await fetch(API + "/expenses");
+  const data = await res.json();
+
+  list.innerHTML = data.map(e => 
+    `<li>${e.title} - ₹${e.amount} (${e.createdBy})</li>`
+  ).join("");
+}
+
+load();
+</script>
+
+</body>
+</html>
